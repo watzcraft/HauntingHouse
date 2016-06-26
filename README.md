@@ -6,7 +6,7 @@ This is another story of home automation - a complete 3 flat appartment house th
 
 I tried to built my own knowledge in this area and keep the information for the poor guy to come and manage the house someday.
 
-I must admit, it is a **lot** of work and in the meantime i may have missed some of the issues and workarounds i encountered on the way. And now, as i see this is a neverending work i decided to release the book in this "under construction" state. Even as it already has about 140 pages, there may come another 140 and it si not complete. It futile to wait.
+I must admit, it is a **lot** of work and in the meantime i may have missed some of the issues and workarounds i encountered on the way. And now, as i see this is a neverending work i decided to release the book in this "under construction" state. Even as it already has about 140 pages, there may come another 140 and it is still not complete. It is futile to wait.
 
 So, if you expect a fully fledged complete and revised book, stay away. If you expect some useful help (and maybe offer some of your own valuable advice) - be welcome.
 
@@ -36,6 +36,6 @@ Any help, regarding typos, configuration tipps and corrections, enhancements, ar
 
 This book is written in Word. I know, you don't like it. For me, it was the only way to bring in some personal preferences regarding layout and appearance. 
 
-I did (and still do) use services like "leanpub" and know that it may perfectly suited to a project like this. You can even participate in writing. 
+I did (and still do) use services like "leanpub" and know that it may perfectly suited to a project like this. You can even participate in writing. But visual appearance is very restricted and even simple "gimmicks" like table and pics required ugly workarounds in my last book. As there are enough compromises in my home control, leave me at least a visual appealing description thereof.
 
 For now, i invite you to use Word in revision mode or to send input simply via mail.
