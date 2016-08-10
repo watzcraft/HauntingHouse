@@ -36,6 +36,6 @@ Any help, regarding typos, configuration tips and corrections, enhancements, are
 
 This book is written in Word. I know, you don't like it. For me, it was the only way to bring in some personal preferences regarding layout and appearance. 
 
-I did (and still do) use services like "leanpub" and I know that it may perfectly suited to a project like this. You can even participate in writing. But visual appearance is very restricted and even simple "gimmicks" like table and pics required ugly workarounds in my last book. As there are enough compromises in my home control, leave me at least a visual appealing description thereof.
+I did (and still do) use services like "leanpub" and I know that it may be perfectly suited to a project like this. You can even participate in writing. But visual appearance is very restricted and even simple "gimmicks" like table and pics required ugly workarounds in my last book. As there are enough compromises in my home control, leave me at least a visual appealing description thereof.
 
 For now, I invite you to use Word in revision mode or to send input simply via mail.
