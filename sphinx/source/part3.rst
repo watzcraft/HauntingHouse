@@ -4,12 +4,12 @@ Part III
 We have a basic system up and running. Now we can start with the bells
 and whistles that will improve the design and bring the project from lab
 to real life.
-
+  
 Access Point
 ------------
 
 wbf1, wbf2 and wbf3 should provide Access Point features. The eth0 and
-wlan0 interfaces need to be bridged only.
+wlan0 interfaces need to be bridged only.  
 
 This is a very special chapter and not everything I did here is really
 understood.
@@ -26,7 +26,7 @@ is that they need a driver that is not available by default for the
 
 -  Switch of power saving
 
--  Run hostapd as daemon
+-  Run hostapd as daemon   
 
 -  Install dhcp server
 
@@ -441,7 +441,7 @@ The next section defines the things wvdial should do when I want to set
 the pin or talk to "unitymedia".
 
 +-------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Parameter   | Meaning                                                                                                                                                                                                                                                                                                                                                                                              |
+| Parameter   | Description                                                                                                                                                                                                                                                                                                                                                                                          |
 +=============+======================================================================================================================================================================================================================================================================================================================================================================================================+
 | Modem       | The device we are talking to. You can derive this from the messages that you get via dmesg after inserting the stick. Here you see that a ttyUSB0, ttyUSB1 and ttyUSB2 is automatically created.                                                                                                                                                                                                     |
 |             |                                                                                                                                                                                                                                                                                                                                                                                                      |
@@ -855,8 +855,8 @@ Security
 
 For some providers the Pi now gets a (temporary) public IP address. Be
 prepared to be visible from the outside world immediately. There are
-strange guys out there that scan for open SSH ports to login. With a
-"standard" Pi configuration with active SSH, user "pi" and password
+strange guys out there that scan for open *ssh* ports to login. With a
+"standard" Pi configuration with active *ssh*, user "pi" and password
 "raspberry" it's a matter of time until you fall prey to one of these -
 and this is only one of the many attack scenarios.
 
@@ -867,7 +867,7 @@ only the most important tips:
 
 -  Change the default password to strong ones
 
--  If you need SSH, use a public/private key scenario
+-  If you need *ssh*, use a public/private key scenario
 
 -  Set up a firewall on the Pi. The iptables rules from above are a
    start, but I don't know if its enough!
@@ -964,17 +964,17 @@ console (if you don't want to run through the house all day and connect
 your keyboard to another Pi).
 
 So, even when not remote accessing from the internet, access from the
-LAN is highly recommended. The workhorse of all this is "ssh".
+LAN is highly recommended. The workhorse of all this is "*ssh*".
 
-SSH
+ssh
 ~~~
 
 Install ssh
 ^^^^^^^^^^^
 
-Before you can remote connect to your Pi, you must ensure that the ssh
+Before you can remote connect to your Pi, you must ensure that the *ssh*
 daemon is up and running, and correctly configured. In current
-distributions, ssh should be installed and only has to be activated in
+distributions, *ssh* should be installed and only has to be activated in
 the Raspberry initial configuration menu. To restart the configuration
 use
 
@@ -988,13 +988,13 @@ A manual install is not hard, though
 
 	sudo apt-get install ssh
 
-Now you can start the ssh server with
+Now you can start the *ssh* server with
 
 .. code::
 
 	sudo /etc/init.d/ssh start
 
-It is important to add the ssh server to the autostart to have it
+It is important to add the *ssh* server to the autostart to have it
 available after reboot.
 
 .. code::
@@ -1004,7 +1004,7 @@ available after reboot.
 Basic usage
 ^^^^^^^^^^^
 
-ssh is the single most important tool to control a standalone,
+*ssh* is the single most important tool to control a standalone,
 console-less Pi.
 
 You use it primarily to work on the commandline of the "remote" systems.
@@ -1041,7 +1041,7 @@ Important options
 Public/Private key
 ^^^^^^^^^^^^^^^^^^
 
-The best way to use ssh is based on public/private key authentication
+The best way to use *ssh* is based on public/private key authentication
 instead of password based authentication. While the procedure seems
 awkward at first, you will get through it very fast.
 
@@ -1057,8 +1057,9 @@ If you answer all questions with a return, this will create a default
 is the private key) and /home/<user>/.ssh/id\_rsa.pub (the public key).
 
 Now, whatever way you prefer to do so, you must add the public key you
-just created to the list of authorized keys in the ssh configuration on
-the server.
+just created for the client to the list of authorized keys in the *ssh* configuration on
+the server. This will enable future passwordless logins of this "authorized" client 
+on the server machine.
 
 -  lookup the .ssh directory in the home directory of the target user on
    the server ( in this case /home/pi/.ssh). If it does not exist,
@@ -1095,7 +1096,7 @@ considerably.
 | wbbase            |          | \*     | \*     | \*     |
 +-------------------+----------+--------+--------+--------+
 
-This way I can access any Pi in the house from a console (ssh client) on
+This way I can access any Pi in the house from a console (*ssh* client) on
 the machines listed on the left.
 
 To ease later administration, I copy the public key to the samba share
@@ -1106,24 +1107,26 @@ for each machine
 	cp /home/pi/.ssh/id_rsa.pub /media/remote/wbdisk/private/admin
 
 I recommend to copy the private key, too, and save it a secure place
-like the Keepass vault.
+like the Keepass vault. The current version has support for storing files along
+with an entry.
 
 |image66|
 
 |image67|
 
-SSH daemon
+ssh daemon
 ^^^^^^^^^^
 
-To configure the SSH daemon, you have to edit /etc/ssh/sshd\_config
+On the server side, you may make some tweaks to the *ssh* configuration, but it's not really
+that important first. To configure the *ssh* daemon, you have to edit /etc/ssh/sshd\_config
 
-Its considered best practice to disable the ssh login for user "root".
+Its considered best practice to disable the *ssh* login for user "root".
 
 .. code::
 
 	PermitRootLogin no
 
-Some guys recommend to change the SSH port from the default 22 to
+Some guys recommend to change the *ssh* port from the default 22 to
 something an intruder might not try to connect to.
 
 .. code::
@@ -1139,11 +1142,11 @@ Upon saving you must restart the server.
 WinSCP
 ^^^^^^
 
-If you're using ssh and Windows I can recommend very much Win SCP, a
+If you're using *ssh* and Windows I can recommend very much Win SCP, a
 remote "explorer" onto your machine. Combined with "putty", a remote
 console you have everything you need to efficiently manage your Pi's.
 
-Included with WinSCP is a simle way to create a key pair for
+Included with WinSCP is a simple way to create a key pair for
 installation on your target machines.
 
 |image68|
@@ -1153,8 +1156,11 @@ key generation.
 
 |image69|
 
-I'd recommend using 208 bit keys, then press "Generate". Save the keys
-and transport them to the respective clients.
+I'd recommend using 2048 bit keys. To protect your private key from unauthorized 
+use you can enter a password here. You will then be prompted for this password
+before every use of the key.
+Press "Generate". Save the keys
+and transport the public keys to the respective servers.
 
 You can configure a configuration by adding a "New Site". Under
 "Advanced..." you can enter your private key.
@@ -1163,12 +1169,14 @@ You can configure a configuration by adding a "New Site". Under
 
 |image71|
 
-Now you are ready to connect to you site using WinSCP and PPK.
+If everything is correct, the next attempt to login from WinSCP to the 
+server where you copied the public key to will not ask for 
+your password - you're simply connected.
 
 ConnectBot
 ^^^^^^^^^^
 
-A great additional feature is provided by "ConnectBot", an SSH client
+A great additional feature is provided by "ConnectBot", an *ssh* client
 for Android.
 
 Following this easy steps you will get remote control in the palm of
@@ -1190,7 +1198,7 @@ fail2ban
 
 If your account is in any way visible in the internet you will most
 certainly encounter malicious login attempts. A very good and simple
-tool is "fail2ban" in addition to strong passwords and/or ssh via PPK.
+tool is "fail2ban" in addition to strong passwords and/or *ssh* via PPK.
 
 Fail2ban will effectively slow down machines trying to break into your
 account using brute force.
@@ -1234,12 +1242,13 @@ connection because of NAT (network address translation) or restrictive
 firewalls around our service. What you need is a gateway computer under
 your control, living in the internet.
 
-Instead of calling in the network to the target, we call the external
-gateway. On the gateway we created a listener that, when contacted,
-forwards the request to the target. In other words, I SSH to a special
-port on the gateway who will transparently forward to the target,
-tunneled through the already existing connection initiated by the
-target. For my client the gateway is not really participating in the
+As no one can see the target from outside, the target itself calls out
+to a well known server (your gateway) and initiates a forwarding service.
+When we want to talk with our service on the Pi, instead of calling in the network 
+to the target service, we call the external
+gateways forwarding service. The call is transparently forwarded to the 
+target, tunneled through the already existing connection initiated by the
+target. For the client the gateway is not really participating in the
 communication, so I use for example the same PPK credentials for the
 target like I'd use in a direct connection.
 
@@ -1253,47 +1262,62 @@ configuration or do not have a server at hand that is under your control
 and visible in the internet, this is a really useful service.
 
 You can register an account for free and after installation of the
-Weaved client on your raspberry, you can setup a SSH remote console very
+Weaved client on your raspberry, you can setup a *ssh* remote console very
 easily.
 
 I will not go into details here, but this is really fine for initial
 steps or under the above mentioned conditions. The service was stable -
-to be honest, more stable than my own reverse tunnel configuration until
-today. I do not know what the additional mile is they did go for it...
+to be honest, more stable than my own reverse tunnel configuration in the beginning.
+Even today i wonder how they manage to resurrect availability after downs of all kind this fast. 
+I do not know what the additional mile is they did go for it... and i admit i have still installed
+Weaved support, just in case...
 
-SSH Tunneling
+ssh Tunneling
+^^^^^^^^^^^^^
+
+Plain *ssh* (reverse) tunneling is available to anyone that has access to a 
+machine on the internet - for me this is a "JiffyBox", a flexible and scalable way of hosting 
+my own server.
+
+As understanding and configuring the different steps may be a bit complex, i moved this
+to a chapter of its own - right below.
+
+ssh Tunneling
 ~~~~~~~~~~~~~
 
 Straight tunnel
 ^^^^^^^^^^^^^^^
 
 You use a "straight" tunnel if you have some services behind a known,
-reachable gateway that only provides SSH services. Using an SSH tunnel
-you can access another server and its service through the SSH tunnel,
-even if the machine itself is not visible.
+reachable gateway that only provides *ssh* services. The services themselves
+are not visible from the outside because of NATs, firewalls or DMZs. The gateway itself **can** 
+see the target, e.g. it is connected with a second network adapter with a private subnet. Using an *ssh* tunnel
+you can access the target and its service through the *ssh* tunnel,
+even if the target itself is not visible.
 
 |image72|
 
 In this example you request a service from "gateway" at "port1" - not
 knowing that the real service is implemented at "target", "port2". The
-ssh process you started at the gateway simply relays the content through
-the tunnel. The "ssh" command is issued on the gateway in this case.
+*ssh* process you started at the gateway simply relays the content through
+the tunnel. The *ssh* command is issued on the gateway in this case.
 
-+--------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option                         | Description                                                                                                                                                            |
-+================================+========================================================================================================================================================================+
-| -f                             | Go into the background                                                                                                                                                 |
-+--------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -N                             | Don't execute command on the target machine                                                                                                                            |
-+--------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -L <localport>:<host>:<port>   | when connecting to localport on the local machine ssh will create a tunnel to remote host:port service. host is the name of the target known on the ssh server side!   |
-+--------------------------------+------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++--------------------------------+--------------------------------------------------------------------------------------------+
+| Option                         | Description                                                                                |
++================================+============================================================================================+
+| -f                             | Go into the background                                                                     |
++--------------------------------+--------------------------------------------------------------------------------------------+
+| -N                             | Don't execute command on the target machine                                                |
++--------------------------------+--------------------------------------------------------------------------------------------+
+| -L <localport>:<host>:<port>   | when connecting to localport on the local machine *ssh* will create a tunnel to            |
+|                                | remote host:port service. host is the name of the target known on the *ssh* server side!   |
++--------------------------------+--------------------------------------------------------------------------------------------+
 
 Using this feature you could for example forward a HTTP protocol through
-the SSH service of your Pi to reach some HTTP server (your heating!) in
-the network.
+the *ssh* service of the gateway to reach some HTTP server (your heating!) in
+the network behind.
 
-Example
+Example (this command is issued on the gateway)
 
 .. code::
 
@@ -1303,21 +1327,23 @@ To sad that this scenario is of no use for us, as there is no way to see
 the target for any server under our control - they are all owned by your
 WAN provider.
 
-Reverse SSH
+Reverse ssh
 ^^^^^^^^^^^
 
 In some occasions we want to connect to a service behind some firewall
 or (in our case of surfstick based WAN connection) behind some NATing
-box.
+box. The target is not visible on the outside for no machine in this scenario.
 
 |image73|
 
-In this case we issue the ssh command on our target, connecting to the
+In this case we issue the *ssh* command on a machine in our local subnet
+(where target is situated, too), connecting to the
 gateway as "user". We instruct the gateway to open a listener on port1
 and relay all traffic to our port1. Note that the target machine does
 not necessarily need to be the machine issuing the command, you can
-relay still further through the issuing machine to the target. The
-leading "\*" means that the gateway will bind its listener to all
+relay still further through the issuing machine to the target. 
+
+The leading "\*" means that the gateway will bind its listener to all
 network addresses on the gateway (if you omit it, it will be reachable
 from localhost only).
 
@@ -1331,15 +1357,17 @@ This command will create a port 10122 on the machine myserver.com. When
 connecting to this port, the connection is forwarded to wbf1:22 as seen
 from the machine issuing the command.
 
-+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| Option                                 | Description                                                                                                                                                               |
-+========================================+===========================================================================================================================================================================+
-| -f                                     | Go into the background                                                                                                                                                    |
-+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -N                                     | Don't execute command on the target machine                                                                                                                               |
-+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
-| -R [bind:]<remoteport>:<host>:<port>   | when connecting to remoteport on the remote machine ssh will create a tunnel to a local host:port service. host is the name of the machine known on the local ssh side!   |
-+----------------------------------------+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
++----------------------------------------+-------------------------------------------------------------------------------------------+
+| Option                                 | Description                                                                               |
++========================================+===========================================================================================+
+| -f                                     | Go into the background                                                                    |
++----------------------------------------+-------------------------------------------------------------------------------------------+
+| -N                                     | Don't execute command on the target machine                                               |
++----------------------------------------+-------------------------------------------------------------------------------------------+
+| -R                                     |                                                                                           |          
+| [bind:]<remoteport>:<host>:<port>      | when connecting to remoteport on the remote machine *ssh* will create a tunnel to a       |
+|                                        | local host:port service. host is the name of the machine known on the local *ssh* side!   |
++----------------------------------------+-------------------------------------------------------------------------------------------+
 
 This is a really powerful technique and I recommend trying it at least
 once.
@@ -1347,7 +1375,7 @@ once.
 To avoid prompting user and password, especially as we want to automate
 connection setup, it is very recommended to combine this with a
 public/private key protocol. You should add the public key of any
-user/machine that wants to create a ssh tunnel to the "tunnel" user on
+user/machine that wants to create a *ssh* tunnel to the "tunnel" user on
 the gateway.
 
 In our case, any Pi in the network opens a tunnel and as such we add all
@@ -1363,13 +1391,19 @@ our local gateway.
 	ssh -fNR *:10222:wbf2:22 tunnel@myserver.com
 	ssh -fNR *:10322:wbf3:22 tunnel@myserver.com
 
-SSH daemon
+Or, more shortly (and with less overhead)
+
+.. code::
+
+	ssh -fN -R *:10022:wbbase:22 -R *:10122:wbf1:22 -R *:10222:wbf2:22 -R *:10322:wbf3:22 tunnel@myserver.com
+
+ssh daemon
 ^^^^^^^^^^
 
 By default a forwarded port can only be accessed via "localhost". This
 means if you have a reverse tunnel opened to your gateway, you can
 access the service on your gateway, but not from another machine via
-your gateway. To allow SSH to publish the port to all interfaces, you
+your gateway. To allow *ssh* to publish the port to all interfaces, you
 need to set GatewayPorts=yes in your /etc/ssh/sshd\_config on the
 gateway server.
 
@@ -1377,34 +1411,37 @@ gateway server.
 
 	GatewayPorts yes
 
-The ssh server automatically disconnects a client if no data is
+The *ssh* server automatically disconnects a client if no data is
 transmitted. In the case of our tunnels this is quite annoying - you
 must restart the tunnels from the console. But you can't, as you can no
-longer access the console... You should instruct the server to send keep
-alive messages to the client to ensure it's still there.
+longer access the console... In addition, there may be network components around 
+in your environment that "forget" to support a connection if there's no traffic 
+for a while (misconfigured firewalls..). Best countermeasure: you should simply instruct the server to send keep
+alive messages to the client to ensure it's still there. 
 
 .. code::
 
-	ClientAliveInterval 30
-	ClientAliveCountMax 10
+	ClientAliveInterval 60
+	ClientAliveCountMax 2
 
-This will send messages to your client every 30 seconds. If 10 messages
-are unanswered, the server disconnects.
+This will send messages to your client every 60 seconds with a maximum attempt of 2 times. If connection is down, the
+server disconnects the ssh session at least afte r2 minutes. This setting will become particularly important in addition with 
+using autossh and the **ExitOnForwardFailure** flag later on.
 
 After any changes on the sshd\_config file, you should restart the
 service
 
 .. code::
 
-	sudo service sshd restart
+	sudo service ssh restart
 
 There's a similar option for the client, too. In this case you must
-change the ssh config file /etc/ssh/ssh\_config
+change the *ssh* config file /etc/ssh/ssh\_config
 
 .. code::
 
-	ServerAliveInterval 30
-	ServerAliveCountMax 10
+	ServerAliveInterval 60
+	ServerAliveCountMax 2
 
 autossh
 ^^^^^^^
@@ -1413,14 +1450,32 @@ One problem with the above approach is that in real world connections,
 especially via a surfstick, are not stable. In practice you have to
 check the connection repeatedly and restart if it is lost.
 
-There's a wrapper implementation for ssh that will do this for you.
+There's a wrapper implementation for *ssh* that will do this for you.
 First, install autossh
 
 .. code::
 
 	sudo apt-get install autossh
 
-The "autossh" is a drop in replacement for "shh".
+The "autossh" is a drop in replacement for "ssh", so this should work
+
+.. code::
+
+	autossh -fN -R *:10022:wbbase:22 -R *:10122:wbf1:22 -R *:10222:wbf2:22 -R *:10322:wbf3:22 tunnel@myserver.com
+
+For *autossh* to be "fully functional" there is a special flag you should add: **ExitOnForwardFailure**. If for example you 
+reboot your target (the one that will issue the autossh) for some reason and on reboot you will resurrect the ssh connections
+you will find the server ports for forwarding still in use - the server is not aware that the connection was dropped from the 
+client. But without the ExitOnForwardFailure flag, ssh will not exit with a failure code and autossh will not retry... So, what you need
+is the combination of the ServerAliveInterval/ServerAliveCountMax, ensuring that the server will find the connection is dropped at some time **and**
+the **ExitOnForwardFailure** flag on the autossh side to force a reconnect attempt upon initial failure.
+
+So, working code in all its beauty:
+
+.. code::
+
+	autossh -o "ExitOnForwardFailure=yes" -fN -R *:10022:wbbase:22 -R *:10122:wbf1:22 -R *:10222:wbf2:22 -R *:10322:wbf3:22 tunnel@myserver.com
+
 
 Add to crontab
 ^^^^^^^^^^^^^^
@@ -1428,13 +1483,8 @@ Add to crontab
 Most probably you want to open the tunnels upon every restart, so best
 is to put the call in the crontab and execute on every reboot.
 
-Create a script /opt/admin/ssh-tunnel.sh (make it executable!!)
-
-.. code::
-
-	..
-
-To add this script issue
+Create a script /opt/admin/ssh-tunnel.sh (make it executable!!) containing only the code for launching the ssh connections above, then add this script 
+to crontab - personally I'd add a small delay to to give the server side a better chance to clean up ssh ports.
 
 .. code::
 
@@ -1446,7 +1496,7 @@ your keys for (pi or root) you must execute the script (with "pi" or
 
 .. code::
 
-	@reboot /opt/admin/ssh-tunnel-ssh.sh > /dev/null
+	@reboot sleep 150 && /opt/admin/ssh-tunnel-ssh.sh > /dev/null
 
 Experience
 ^^^^^^^^^^
@@ -1598,7 +1648,7 @@ Install screen
 ~~~~~~~~~~~~~~
 
 "screen" is a very useful tool if you need to work at the console,
-especially via ssh. In many cases you will wish to have another terminal
+especially via *ssh*. In many cases you will wish to have another terminal
 at hand to do some related task, look up a certain file... This is where
 "screen" comes into play. It is a "virtual" console switcher, so you can
 have multiple sessions at once.

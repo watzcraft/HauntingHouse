@@ -168,13 +168,13 @@ if "%1" == "latex" (
 )
 
 if "%1" == "latexpdf" (
-	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex
+	%SPHINXBUILD% -b latex %ALLSPHINXOPTS% %BUILDDIR%/latex  1> %BUILDDIR%/sphinx.log 2> %BUILDDIR%/sphinx-err.log
 	cd %BUILDDIR%/latex
 	make all-pdf
 	cd %~dp0
 	echo.
 	echo.Build finished; the PDF files are in %BUILDDIR%/latex.
-	copy %BUILDDIR%\latex\*.pdf ..
+	copy /y %BUILDDIR%\latex\*.pdf ..
 	goto end
 )
 
@@ -272,7 +272,7 @@ if "%1" == "pseudoxml" (
 )
 
 if "%1" == "dummy" (
-	%SPHINXBUILD% -b dummy %ALLSPHINXOPTS% %BUILDDIR%/dummy
+	%SPHINXBUILD% -b dummy %ALLSPHINXOPTS% %BUILDDIR%/dummy 1> %BUILDDIR%/sphinx.log 2> %BUILDDIR%/sphinx-err.log
 	if errorlevel 1 exit /b 1
 	echo.
 	echo.Build finished. Dummy builder generates no files.
