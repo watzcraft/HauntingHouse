@@ -2576,53 +2576,10 @@ with some configuration pages.
 
 When starting to search for alternatives we will soon discover that free
 CalDav services are rare. The last option remaining is hosting the
-service yourself.
-
-Having already installed such a bunch of software for this project, this
-seems viable anyway.
-
-The smallest installation seems to provided by radicale.org. A no
-database, no UI, no bells, no whistles implementation. We will give this
-a try.
-
-"radicale" should be available from the repository. You may install from
-hand using the python installer, but be prepared that settings are
-different.
-
-.. code::
-
-	sudo apt-get install radicale
-
-I had to uncomment the line
-
-.. code::
-
-	ENABLE_RADICALE=yes
-
-in /etc/default/radicale to enable automatic startup.
-
-That's all for the first steps. Start radicale.
-
-.. code::
-
-	sudo service radicale
-
-The server is now running on
-
-.. code::
-
-	http://<machine>:5232
-
-Now you can simply add a calendar and some events using your favorite
-CalDav client. Normally this is quite simple for example with your
-smartphone CalDav client application. The default calendar location is
-
-.. code::
-
-	http://<machine>:5232/<user>/calendar.ics
-
-Additional configuration for radicale is possible, follow the steps from
-the radicale site.
+service yourself. Having already installed such a bunch of software for this project, this
+seems a viable alternative. For this project we opted to give the lightweight
+"radicale" server a chance. Everything you need to know you will find in the 
+"Tools & Applications" part.
 
 Now we have everything at hand we need. We can now send commands via
 calendar entries using the simple syntax in the event description.
