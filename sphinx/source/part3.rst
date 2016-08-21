@@ -584,7 +584,7 @@ line. Before uping the adapter the PIN will be set.
 	auto ppp0
 	iface ppp0 inet wvdial
 	provider myprovider
-	pre-up /usr/local/bin/setPIN.sh
+	pre-up /opt/admin/setPIN.sh
 
 To ease manual PIN unlocking add this section to the wvdial.conf
 
@@ -654,6 +654,8 @@ Important options
 
 Network config 
 ~~~~~~~~~~~~~~~
+
+Now we integrate our stick in the standard network configuration.
 
 /etc/network/interfaces
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -1632,33 +1634,6 @@ I did not test this feature.
 Tweak installation
 ------------------
 
-Install minicom
-~~~~~~~~~~~~~~~
-
-In some sceanrios it is quite useful to have a terminal around to make
-some low level conversation with attached devices.
-
-A very common tool is "minicom".
-
-.. code::
-
-	sudo apt-get install minicom
-
-Install screen
-~~~~~~~~~~~~~~
-
-"screen" is a very useful tool if you need to work at the console,
-especially via *ssh*. In many cases you will wish to have another terminal
-at hand to do some related task, look up a certain file... This is where
-"screen" comes into play. It is a "virtual" console switcher, so you can
-have multiple sessions at once.
-
-As it is really powerful, I recommend looking up some tutorial.
-
-.. code::
-
-	sudo apt-get install screen
-
 Memory
 ~~~~~~
 
@@ -2411,9 +2386,9 @@ The main url or the rest API is
 
 	http://<host>:8080/rest
 
-where host is one of ma wbf1, wbf2 or wbf3 hosts with openHAB.
+where host is one of your openHAB instrumented Pi's.
 
-You can select the content, I'm using JSON, so adding the header
+You can select the content, I'm using JSON, so I'm adding the header
 
 .. code::
 
@@ -2479,9 +2454,67 @@ You can select the content, I'm using JSON, so adding the header
 |                 |                                 |
 +-----------------+---------------------------------+
 
+This is a simple curl call to read some openHAB item state. curls default is HTTP GET.
+
 .. code::
 
-	curl http://wbf1:8080/rest/items/wbf1_kitchen_therm0_tempAct/state --verbose
+	curl 
+		http://wbf1:8080/rest/items/wbf1_kitchen_therm0_tempAct/state 
+		--verbose
+
+Now you will see something like
+
+.. code::
+
+	* About to connect() to wbf1 port 8080 (#0)
+	*   Trying 192.168.42.210...
+	* connected
+	* Connected to wbf1 (192.168.42.210) port 8080 (#0)
+	> GET /rest/items/wbf1_kitchen_therm0_tempAct/state HTTP/1.1
+	> User-Agent: curl/7.26.0
+	> Host: wbf1:8080
+	> Accept: */*
+	>
+	* additional stuff not fine transfer.c:1037: 0 0
+	* HTTP 1.1 or later with persistent connection, pipelining supported
+	< HTTP/1.1 200 OK
+	< Date: Sun, 21 Aug 2016 13:38:09 GMT
+	< X-Atmosphere-first-request: true
+	< X-Atmosphere-tracking-id: a193ef22-e92c-4d09-a80d-ebc0b6ddf155
+	< Expires: -1
+	< Cache-Control: no-store, no-cache, must-revalidate
+	< Pragma: no-cache
+	< Content-Type: text/plain
+	< Transfer-Encoding: chunked
+	< Server: Jetty(8.1.3.v20120522)
+	<
+	* Connection #0 to host wbf1 left intact
+	25.20
+	* Closing connection #0
+
+The temperature is 25,2 degrees in the kitchen, first floor.
+
+Integration is a whole lot easier when we do it in python.
+
+Putting data with curl
+
+.. code::
+
+	curl 
+		-X PUT
+		-H "Content-Type: text/plain" 
+		-d 'ON' 
+		http://wbf1:8080/rest/items/wbbase_heating_state/state
+
+Posting data with curl
+
+.. code::
+
+	curl 
+		-X POST
+		-H "Content-Type: text/plain" 
+		-d 'ON' 
+		http://wbf1:8080/rest/items/wbbase_heating_state
 
 Heating data (Oekofen pellematic)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2490,7 +2523,7 @@ A very interesting feature is integration of heating sensor data. Most
 modern systems have some kind of API for home automation integration,
 most of them plain Web forms or REST services.
 
-My system, an Ökofen pellematic, has a "hybrid" web interface that
+My system, an Oekofen pellematic, has a "hybrid" web interface that
 combines a web page for login and Ajax based services for providing the
 data.
 
@@ -2515,7 +2548,8 @@ saving the session cookies in a jar using the "—cookie-jar" argument...
 
 Now we are authenticated, the cookies are injected in the following
 requests using the "—cookie" argument. Now we can request the sensor
-information.
+information. You request data points using a list of their names in JSON format (lets
+ignore the fact, that the Content-type is wrong ).
 
 .. code::
 
@@ -2564,15 +2598,13 @@ And this is the result.
 	...
 	]
 
-Let's analyze this in detail.
-
-You request data points using a list of their names in JSON format (lets
-ignore the fact, that the Content-type is wrong )
+Let's analyze this in detail. "name" contains the name of the datapoint, "value" a scaled value and "divisor", if set the scale so that 
+"realValue = value / divisor".
 
 +-----------------+------------------------------------------------------------------------------------+
 | Service         |                                                                                    |
 +=================+====================================================================================+
-|                 | /?action=get&attr=1'                                                               |
+|                 | /?action=get&attr=1                                                                |
 +-----------------+------------------------------------------------------------------------------------+
 | Method          |                                                                                    |
 +-----------------+------------------------------------------------------------------------------------+
@@ -2595,12 +2627,87 @@ ignore the fact, that the Content-type is wrong )
 |                 | -  status                                                                          |
 +-----------------+------------------------------------------------------------------------------------+
 
-You can set, data points, too
+You can set data points, too.
 
-...
++-----------------+------------------------------------------------------------------------------------+
+| Service         |                                                                                    |
++=================+====================================================================================+
+|                 | /?action=set                                                                       |
++-----------------+------------------------------------------------------------------------------------+
+| Method          |                                                                                    |
++-----------------+------------------------------------------------------------------------------------+
+|                 | POST                                                                               |
++-----------------+------------------------------------------------------------------------------------+
+| Request Data    |                                                                                    |
++-----------------+------------------------------------------------------------------------------------+
+|                 | Array of data points names in JSON format                                          |
+|                 | Example:                                                                           |
+|                 | {"CAPPL:LOCAL.hk[0].betriebsart[1]":"0"}                                           |
++-----------------+------------------------------------------------------------------------------------+
+| Response Data   |                                                                                    |
++-----------------+------------------------------------------------------------------------------------+
+|                 | Array of data point result objects. We will read the following object properties   |
+|                 | Example:                                                                           |
+|                 | [{status: "OK", name: "CAPPL:LOCAL.hk[0].betriebsart[1]", value: "0"}]             |
++-----------------+------------------------------------------------------------------------------------+
+
+
+To integrate this data later it is much easier to use a real programming language instead of commandline scripts
+(except for those fluent in shellspeak..). For programming on the Pi you will end with Python very soon. To make HTTP
+request you should first install the "requests" package.
+
+.. code::
+
+	pip install requests
+
+Now we can script a simple python program that does the equivalent of the curl invocations from above.
+
+.. code::
+
+	import requests
+	server = 'http://192.168.42.2:8080/'
+
+	# login ###########################################
+	headers = {
+	}
+	data = {
+		'username' : '<user>',
+		'password' : '<password>',
+		'language' : 'en'
+	}
+	r = requests.post(server + 'index.cgi', headers = headers, data = data)
+	pksession = r.cookies['pksession']
+
+	# get datapoints ######################################
+	cookies = { 
+		'pksession' : pksession,
+		'language' : 'en'
+	}
+	headers = {
+		'Content-Type' : 'application/x-www-form-urlencoded',
+		'Accept' : 'application/json',
+		'Accept-Language' : 'en'
+	}
+	data = '["CAPPL:LOCAL.L_aussentemperatur_ist","CAPPL:FA[0].L_kesselstatus"]'
+	r = requests.post(server + '?action=get&attr=1', headers = headers, data = data, cookies = cookies)
+	print r.json()
+
+We will combine this to a complete script later, dumping the result values in a RRD database for visualization.
 
 Internet data
 ^^^^^^^^^^^^^
+
+The internet provides a lot of free services you can integrate in you home automation - to only name a few
+
+* weather conditions
+	* temperature
+	* rain
+	* wind
+* astro conditions
+	* sunset 
+	* sunrise
+* calendars 
+	* holidays
 
 Data sinks
 ~~~~~~~~~~

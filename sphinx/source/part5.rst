@@ -2,8 +2,8 @@ Part V
 ======
 
 This section is dedicated to tools & applications you can or should install on your Pi. As many of them have no direct relationship to 
-the home automation topic but nonetheless are so complex and powerful themselve that squeezing a description into the other chapters 
-would be obfuscating the whole book, we simply pulled them out into this chapter
+the home automation topic but nonetheless are so complex and powerful themselves that squeezing a description into the other chapters 
+would be obfuscating the whole book, I simply pulled them out into this chapter.
 
 Radicale
 --------
@@ -14,8 +14,7 @@ Overview
 *Radicale* is a lightweight CalDav & CardDav server that seems to be perfectly sized for this project. Other options may have been DaviCal, Baikal 
 or even ownCloud (only to name a few), but all have a much larger footprint, bot in code and persistence requirements.
 
-*Radicale* is a no database, no UI, no bells, no whistles implementation. We will give this
-a try.
+*Radicale* is a no database, no UI, no bells, no whistles implementation. I will give this a try.
 
 Installation
 ~~~~~~~~~~~~
@@ -152,3 +151,30 @@ For my requirements i have used two options
    This is a pure browser based implementation and a very nice calendar app. 
    
 These two make up for a very simple remote date based control.
+
+minicom
+-------
+
+In some sceanrios it is quite useful to have a terminal around to make
+some low level conversation with attached devices.
+
+A very common tool is "minicom".
+
+.. code::
+
+	sudo apt-get install minicom
+
+screen
+------
+
+"screen" is a very useful tool if you need to work at the console,
+especially via *ssh*. In many cases you will wish to have another terminal
+at hand to do some related task, look up a certain file... This is where
+"screen" comes into play. It is a "virtual" console switcher, so you can
+have multiple sessions at once.
+
+As it is really powerful, I recommend looking up some tutorial.
+
+.. code::
+
+	sudo apt-get install screen

@@ -546,21 +546,21 @@ around for finding good tutorials.
 
 +--------------------------------------------------+-------------+----------------+
 | IN 1                                             ||image15|    |   OUT 1        |
-+==================================================+=============+================+
++--------------------------------------------------+             +----------------+
 | IN 2                                             |             | OUT 2          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 3                                             |             | OUT 3          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 4                                             |             | OUT 4          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 5                                             |             | OUT 5          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 6                                             |             | OUT 6          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 7                                             |             | OUT 7          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | IN 8                                             |             | OUT 8          |
-+--------------------------------------------------+-------------+----------------+
++--------------------------------------------------+             +----------------+
 | GND                                              |             | 5V to 50V DC   |
 | You need to connect Pi and secondary power GND   |             |                |
 +--------------------------------------------------+-------------+----------------+
@@ -2454,7 +2454,7 @@ there are other plugins around you may want to use.
 
 - openhab-addon-persistence-rrd4j
 	This is one of the most often used persistence services. Item state
-	is stored in sa RRD database, allowing for the availability of
+	is stored in a RRD database, allowing for the retrieval of
 	historic data and the quick creation of complex charts. Mastering
 	RRD is a topic of its own and maybe we will add another chapter
 	some day.
@@ -2493,32 +2493,31 @@ All this addons provide some simple means to tasks like
 Making sound
 ^^^^^^^^^^^^
 
-openhab-addon-binding-mpd - openHAB MPD Binding
+- openhab-addon-binding-mpd
+	This binding can control the "Music player daemon".
 
-openhab-addon-io-multimedia-marytts - openHAB Multimedia MaryTTS
-
-openhab-addon-io-multimedia-speechdispatcher - openHAB Multimedia
-SpeechDispatch
+- openhab-addon-io-multimedia-marytts
+	A binding to a text-to-speech engine 
 
 Generic integration
 ^^^^^^^^^^^^^^^^^^^
 
--  openhab-addon-action-mqtt
+- openhab-addon-action-mqtt
+	Trigger MQTT events directly from rules
 
 - openhab-addon-binding-mqtt
-	An MQTT client for sending and receiving MQTT events
+	An MQTT client for sending and receiving MQTT events, bound to events on the openHAB bus or from openHAB items
 
 - openhab-addon-binding-exec
 	A bi-directional connection to the platform shell. Use executables
 	to read state and interact
 
 - openhab-addon-binding-http
-	This is a bi-directional binding to any HTTP server
+	This is a bi-directional binding to any HTTP server. Features are quite limited and you will be very fast better of using
+	"curl" and the exec binding.
 
 - openhab-addon-binding-serial
-
-- openhab-addon-io-serial - openHAB Serial Transport
-	Support serial IO
+	A bi-directional binding of items to a serial interface
 
 - openhab-addon-binding-tcp
 	Support plain socket communication
@@ -2526,24 +2525,32 @@ Generic integration
 Receiving events
 ^^^^^^^^^^^^^^^^
 
-openhab-addon-binding-bluetooth - openHAB Bluetooth Binding
+- openhab-addon-binding-bluetooth
+	Detect and react on available bluetooth devices
 
-openhab-addon-binding-mailcontrol - openHAB MailControl Binding
+- openhab-addon-binding-mailcontrol
+	Control openHAB via emails
 
-openhab-addon-binding-asterisk - openHAB Asterisk Binding
+- openhab-addon-binding-asterisk 
+	Get informed about calls
 
 External conditions
 ^^^^^^^^^^^^^^^^^^^
 
-openhab-addon-action-astro - openHAB Astro Action
+- openhab-addon-action-astro
+	Calculate sunrise and sunset
 
-openhab-addon-binding-astro - openHAB Astro Binding
+- openhab-addon-binding-astro
+	Bind astro information to your items
 
-openhab-addon-binding-networkhealth - openHAB NetworkHealth Binding
+- openhab-addon-binding-networkhealth
+	Bind items to network health information
+	
+- openhab-addon-binding-systeminfo 
+	Bind items to platform information like swap space, CPI load,...
 
-openhab-addon-binding-systeminfo - openHAB Systeminfo Binding
-
-openhab-addon-binding-weather - openHAB Weather Binding
+- openhab-addon-binding-weather
+	Bind items to weather data retrieved from different providers for your location
 
 Date & time based control
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -2613,8 +2620,11 @@ Tracking
 Another interesting option is "tracking" - position based events.
 
 -  openhab-addon-binding-mqttitude
+	Bind OwnTracks location information to items. You can switch state depending on your 
+	position.
 
 -  openhab-addon-binding-openpaths
+	This is the same idea with another provider, OpenPaths
 
 openHAB - caveats
 ~~~~~~~~~~~~~~~~~
