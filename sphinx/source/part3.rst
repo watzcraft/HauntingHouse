@@ -1827,67 +1827,37 @@ I did not integrate a RTC yet.
 Improve logging
 ---------------
 
-Log to temporary file system
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Understand (r)syslog
+~~~~~~~~~~~~~~~~~~~~~~
 
-A simple (already mentioned) trick is to simply map /var/log to a
-temporary file system.
+When you come to \*nix, everybody will talk about and use (r)syslog. On a Pi (Debian system), "rsyslog" will be installed so we will talk about this 
+flavor here only. You can find information on he "rsyslog vs. syslog" topic in the internet.
 
-.. code::
+"rsyslog" is a daemon managing nearly all log output from standard \*nix programs. An more detailed article on log configuration
+ you can find e.g. http://blog.scphillips.com/posts/2015/05/raspberry-pi-system-logging-and-loggly/. 
 
-	tmpfs /var/log tmpfs size=1M,noatime,nodiratime,mode=0755 00
+"rsyslog" takes input from localhost:514 or "/dev/log". This is the preferred way to use logging, even if  alog server is installed anywhere. You 
+use "rsyslog" as a local indirection that will forward but provides other features in addition.
 
-There are caveats, though:
+Log server
+~~~~~~~~~~~~~~~
 
--  Some process log **really** much. You should check logging behavior.
+Having said that you should always use the local logging facilities to have a standard configuration and setup does not mean that server
+logging is bad. It is rather a practical feature (that can be used e.g. for "read only configurations").
 
--  Logs are lost in case of failure. You could combine with a cron based
-   copy to some hard disk.
-
--  Log fails (and as such some processes) when tmpfs is full.
-
-Log to external disk
-~~~~~~~~~~~~~~~~~~~~
-
-Now we have some prerequisites to improve the logging still further and
-we move the important logs simply to the private share on the hard disk.
-
-To be flexible we provide a complete directory on the private Samba
-share that will receive "working stuff" from the clients. Add this to
-/etc/fstab after creating the directory /var/remote locally.
-
-.. code::
-
-	# mount a directory for working stuff that can be moved to the server
-	/media/remote/wbdisk/private/var /var/remote none _netdev,bind 0 0
-
-When the Samba share is available, all data should be written to the
-hard disk. It's important to add the "\_netdev" flag in order to wait
-for the network is up.
-
-Now add another subdirectory "log" to /var/remote after mounting. We
-will use this as a new base directory for all subsystems whose log is
-large and/or in some way interesting.
-
-To check if everything was alright, you can
-
-.. code::
-
-	touch /var/remote/log/test
-
-The file "test" should have been created on the harddisk at
-"/media/wbdisk/srv/wbf1/var/log" (if you have made this experiment from
-the wbf1 machine).
-
-Any service that wants to log to samba share must add dependency to
-$remote\_fs in its init script.
+A particulary interesting feature could be the "Loggly" cloud service - providing a cloud based log for free in the basic version. If you have a 
+"multi node" installation as this one, you could opt for a local log server, logging to the USB disk right from the start. All this would be simply
+a matter of installing a log server and some local node configuration.
 
 Tweak logrotate
 ~~~~~~~~~~~~~~~
 
 Logrotate is the little tool that monitors log files on a regular base
 and rotates them according to the rules defined in /etc/logrotate.conf
-and the included rule sets in /etc/logrotate.d/\*
+and the included rule sets in /etc/logrotate.d/\*. You can define the rotation frequency and add scripts to handle logs after being rotated - e.g. 
+copying them to a non tmpfs share on the network.
+
+As rsyslog uses logrotate, too, you can manage all your system log file behavior here.
 
 For this project the constraints are:
 
@@ -1951,6 +1921,63 @@ To force logrotate to evaluate the definitions immediately you can call
 	logrotate --force /etc/logrotate.conf
 
 which will rotate every log file (regardless of rule evaluation).
+
+
+
+Log to temporary file system
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+A simple (already mentioned) trick is to simply map /var/log to a
+temporary file system.
+
+.. code::
+
+	tmpfs /var/log tmpfs size=1M,noatime,nodiratime,mode=0755 00
+
+There are caveats, though:
+
+-  Some process log **really** much. You should check logging behavior.
+
+-  Logs are lost in case of failure. You could combine with a cron based
+   copy to some hard disk.
+
+-  Log fails (and as such some processes) when tmpfs is full.
+
+Log to external disk
+~~~~~~~~~~~~~~~~~~~~
+
+Now we have some prerequisites to improve the logging still further and
+we move the important logs simply to the private share on the hard disk.
+
+To be flexible we provide a complete directory on the private Samba
+share that will receive "working stuff" from the clients. Add this to
+/etc/fstab after creating the directory /var/remote locally.
+
+.. code::
+
+	# mount a directory for working stuff that can be moved to the server
+	/media/remote/wbdisk/private/var /var/remote none _netdev,bind 0 0
+
+When the Samba share is available, all data should be written to the
+hard disk. It's important to add the "\_netdev" flag in order to wait
+for the network is up.
+
+Now add another subdirectory "log" to /var/remote after mounting. We
+will use this as a new base directory for all subsystems whose log is
+large and/or in some way interesting.
+
+To check if everything was alright, you can
+
+.. code::
+
+	touch /var/remote/log/test
+
+The file "test" should have been created on the harddisk at
+"/media/wbdisk/srv/wbf1/var/log" (if you have made this experiment from
+the wbf1 machine).
+
+Any service that wants to log to samba share must add dependency to
+$remote\_fs in its init script.
 
 Move logs
 ~~~~~~~~~
@@ -2278,6 +2305,126 @@ Changes to logrotate
 		rotate 7
 		copytruncate
 	}
+
+Add logging to your python scripts
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+If you have serious features implemented in scripts of your own, you most certainly will want to have some kind of log to check
+the scripts working and outcome.
+
+Assuming you will use python as the Pi's nearly "native" language, we summarize the python best practices for creating 
+debugging and operating output.
+
+First, you should use the well documented python module "logging". Don't "print" to the console, don't invent some log file management of you 
+own. We will not go into the countless reasons why - simply adopt best practice!
+
+A simple example:
+
+.. code::
+
+	#!/usr/bin/python
+
+	import logging
+
+	logging.basicConfig(level=logging.INFO)
+	logger = logging.getLogger("demo")
+	logger.info('Hello world!')
+
+If you run the script you will hopefully see:
+
+.. code::
+
+	pi@wbbase ~ $ /opt/admin/demo_logging.py
+	INFO:demo:Hello world!
+
+An important feature for post-mortem analysis is a detailed stacktrace of the exception. This is how to do it:
+
+.. code::
+
+	try:
+		// some code of yours
+	except Exception, e:
+		logger.error('oops', exc_info=True)
+	
+Now there's a million ways to configure the logging environment programatically, but I recommend not to do so. If you just externalize 
+configuration from the start and have some boilerplate configuration files around you will be very flexible and future requirements are
+a no brainer.
+
+There is a standard log configuration file format for python around, but newer version have replaced this with a more modern and flexible 
+syntax, I recommend using this from the start. I prefer using a JSON format so a basic implementation would be
+
+.. code::
+
+	{
+		"version": 1,
+		"disable_existing_loggers": false,
+		"formatters": {
+			"simple": {
+				"format": "[%(asctime)s][%(levelname)s] %(message)s"
+			}
+		},
+		"handlers": {
+			"console": {
+				"class": "logging.StreamHandler",
+				"level": "DEBUG",
+				"formatter": "simple",
+				"stream": "ext://sys.stdout"
+			},
+			"file": {
+				"class": "logging.handlers.RotatingFileHandler",
+				"level": "DEBUG",
+				"formatter": "simple",
+				"filename": "/var/log/foo.log",
+				"maxBytes": 1000000,
+				"backupCount": 2,
+				"encoding": "utf8"
+			}
+		},
+		"loggers": {
+			"foo": {
+				"level": "DEBUG"
+			}
+		},
+		"root": {
+			"level": "INFO",
+			"handlers": ["console", "file"]
+		}
+	}
+
+Some standard initialization code. This will read the log file from where the python source code is situated. 
+
+.. code::
+
+	#!/usr/bin/python
+	
+	import os
+	import json
+	import logging.config
+
+	def initLogging(
+		path = os.path.dirname(os.path.realpath(__file__)) + '/logcfg.json'
+	):
+		if os.path.exists(path):
+			with open(path, 'rt') as f:
+				config = json.load(f)
+			logging.config.dictConfig(config)
+		else:
+			logging.basicConfig(level=logging.INFO)
+			
+	initLogging()
+
+	logger = logging.getLogger(__name__)
+	logger.info('Hello World!')
+
+Switching to
+
+.. code::
+
+	path = 'logcfg.json'
+
+Will read configuration from the current working dir instead.
+
+Detailed information on logging and configuration options you will find here https://docs.python.org/3/howto/logging.html.
 
 Network monitoring
 ------------------

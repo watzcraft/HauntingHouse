@@ -3250,12 +3250,13 @@ a listing of all available modules and moved backwards...
 Most important is the support of SIP. The rest are dependencies or
 "future feature" modules (musiconhold, playback).
 
-This is the /etc/asterisk/modules..conf
+This is my /etc/asterisk/modules..conf
 
 .. code::
 
 	[modules]
 	autoload=no
+
 	load => res_clioriginate.so
 	load => res_crypto.so
 	load => res_curl.so
@@ -3287,6 +3288,7 @@ This is the /etc/asterisk/modules..conf
 	load => app_transfer.so
 	load => app_verbose.so
 	load => chan_local.so
+	load => chan_sip.so
 	load => codec_alaw.so
 	load => codec_gsm.so
 	load => codec_ulaw.so
@@ -3307,7 +3309,8 @@ The outdoor and indoor phones are finally terminated on the asterisk
 machine, dispatching door bell and internal calls using the SIP protocol
 - just as if they were on different corners of the world.
 
-Every participant is mentioned in the sip.conf
+Every participant is mentioned in the sip.conf. I have added an account for each appartment, the door itself and 
+an "administration" account.
 
 .. code::
 
@@ -3335,11 +3338,17 @@ Every participant is mentioned in the sip.conf
 	secret=password
 	context=wb
 
+	[admin]
+	type=friend
+	host=dynamic
+	secret=password
+	context=wb
+
 extensions
 ''''''''''
 
 Extensions finally define what asterisk should do when a certain number
-is dialed. The dial codes are the default codes used by the Auerswald
+is dialed, it is the "dialplan". The dial codes are the default codes used by the Auerswald
 outdoor phone (except the 901).
 
 Here we have our minimal rule set. If for example the first button is
@@ -3370,6 +3379,63 @@ short message for you or forwarding the visitor to your cellphone.
 
 Dialing special numbers (initiating a call or even while talking to
 somebody) can trigger scripts or enter the openHAB scene...
+
+Run in commandine mode
+'''''''''''''''''''''''''
+
+If you want to connect to an asterisk running in the background, run
+
+.. code::
+
+	asterisk -r 
+	# or verbose, the more v's the more output
+	asterisk -vvr 
+	
+Once in the console, you can quit with.
+
+Asking for help
+
+.. code::
+
+	*CLI> help
+	
+Exit the commandline
+
+.. code::
+
+	*CLI> exit
+
+	If you are tweaking around the configuration, you can force reloading the files
+
+.. code::
+
+	*CLI> reload
+	# or for the extensions only
+	*CLI> dialplan reload
+	
+	
+Connect a softphone
+'''''''''''''''''''''''''
+
+Connecting a softphone for testing purposes is a breeze. I use Zoiper for Android, i think any other (PC based, too) will do.
+
+You only need the server address (port 5060 is SIP default), the user "admin" and its password from your sip.conf and you are ready
+to call.
+
+Attaching a softphone is especially useful when we are enhancing our asterisk with more control features. Via softphone, the "System" 
+call and a shell script you can do anything...
+
+Calling the system
+'''''''''''''''''''''''''
+
+Callouts to scripts from asterisk is a great feature that allows integration in nearly every scenario. This dialplan entry triggers
+the script "trigger.sh" upon calling 88. For sure the user "asterisk" must have execution rights.
+
+.. code::
+
+	exten => 88,1,System(/opt/admin/trigger.sh)
+	exten => 88,n,Hangup()
+
 
 GO/Box 100
 ^^^^^^^^^^

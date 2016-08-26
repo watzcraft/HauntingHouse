@@ -421,6 +421,20 @@ use -r
 File system magic
 ~~~~~~~~~~~~~~~~~
 
+List of open files
+^^^^^^^^^^^^^^^^^^
+
+.. code::
+
+	lsof
+	
+Show users of file
+^^^^^^^^^^^^^^^^^^
+
+.. code::
+
+	fuser -v <file>
+
 Show file system of a file
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 

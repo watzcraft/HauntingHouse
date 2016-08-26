@@ -479,6 +479,33 @@ forget the backslashes".
 
     |image64|
 
+More tweaks
+^^^^^^^^^^^^
+
+Samba provides more services than file sharing only. If it happens that you don't need the print services and you
+encounter messages like this in you log files
+
+.. code::
+
+	[2016/08/19 04:44:39.680867,  0] printing/print_cups.c:487(cups_async_callback)
+	  failed to retrieve printer list: NT_STATUS_UNSUCCESSFUL
+
+you may want to disable printing completely. Add these settings in /etc/samba/smb.conf
+
+.. code::
+
+	load printers = no
+	printing = bsd
+	printcap name = /dev/null
+
+Restart with 
+
+.. code::
+
+	sudo service samba restart
+	
+Now your logs should be clean.
+
 Backup
 ------
 

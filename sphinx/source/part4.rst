@@ -5,8 +5,33 @@ This is the part about dreaming. What could we add to make this a real
 reference installation. I hope many of the following topics will make it
 to part III one fine day.
 
-More event notifications...
+More event notifications
 -------------------------
+
+Pushover
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Pushover (https://pushover.net/) is currently one of the better known platforms for simple push messages. You can find an overview of the 
+services provided on their platform. While not exactly free, you must only purchase a cheap client app to use the service without regular fees.
+
+Operating a client is very simple, even for using the shell with curl an example is provided.
+
+Registration is simple. On the website go to API, Signup. Enter eMail address and a password and you will receive a confirmation mail immediately.
+
+After downloading and installing a client, e.g. the Android client you sign on using user and password. After this you have to connect the client
+to your account and that's it.
+
+Now you are ready to receive notifications from pushover. On the main web page, when you are logged in, you can send notifications directly using a form.
+
+To get active you need one more step - you need to register an application to send messages yourself, e.g. using curl. Once again, on the website 
+there's a page to register an application. You enter a name, accept conditions and are ready to push messages with the application token you receive
+after this step.
+
+This is all you need to send your first message from the command line.
+
+.. code::
+
+	curl --form-string "token=<app-token>" --form-string "user=<user-token>" --form-string "message=from curl with love" https://api.pushover.net/1/messages.json
 
 Sending SMS
 ~~~~~~~~~~~
@@ -14,8 +39,8 @@ Sending SMS
 Twitter
 ~~~~~~~
 
-Push message platforms
-~~~~~~~~~~~~~~~~~~~~~~
+Other push message platforms
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Adding a UI device
 ------------------
